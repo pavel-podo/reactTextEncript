@@ -1,5 +1,5 @@
 import {CODE_STATUS,KEY, TEXT,ENCRIPT_TEXT,START_ENCRIPT_TEXT,DE_ENCRIPT_TEXT,FINISH_TEXT} from '../types'
-export const keyEedit  = (key)=>{
+export const keyEdit  = (key)=>{
     return{
         type :KEY,
         payload:key

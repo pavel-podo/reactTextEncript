@@ -13,18 +13,21 @@ import {
   TextInput,
   Share,
 } from "react-native";
-import { THEME } from "../THEME";
+import { THEME } from "../data/THEME";
 import {
-  keyEedit,
+  keyEdit,
   textEdit,
   finishTextEdit,
   deEncriptTextEdit,
 } from "../store/actions/main";
+import {
+  headerTitleEdit
+} from "../store/actions/headerTitle";
 import { MessageBox } from "./mesageBox";
 import { ChekingFinishText } from './ChekingFinishText';
 import { lang } from "../lang/lang";
-
-export const MainScreen = () => {
+import {Header} from "./Header"
+export const MainScreen = ({navigation}) => {
   const [errorMessage, setErrorMessage] = useState({
     message: "",
     bgColor: "",
@@ -34,6 +37,10 @@ export const MainScreen = () => {
   const [showCodeButton, setShowCodeButton] = useState(true);
   const [showKey, setShowKey] = useState(false);
   const dispatch = useDispatch();
+  
+  const intLang = useSelector((state) => state.interfaceLanguageReducer.interfaceLanguage);
+  
+
   /*useEffect(()=>{
     dispatch(changeKey()
     )
@@ -48,7 +55,12 @@ export const MainScreen = () => {
     console.log("store - ", state);
     return state.mainReducer.finishText;
   });
-
+ if (codeStatus == 'code'){
+  dispatch(headerTitleEdit(intLang.encryption))
+ } 
+ if (codeStatus == 'deCode'){
+  dispatch(headerTitleEdit(intLang.decryption))
+ } 
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -64,8 +76,8 @@ export const MainScreen = () => {
     dispatch(textEdit(text));
     clearInputs()
   };
-  const clearAll = () =>{
-    dispatch(keyEedit(''))
+  const clearAll = () => {
+    dispatch(key(''))
     dispatch(textEdit(''))
     dispatch(finishTextEdit(''))
     dispatch(deEncriptTextEdit(''))
@@ -194,7 +206,7 @@ export const MainScreen = () => {
   };
   const onChangeKey = (text) => {
     clearInputs()
-    dispatch(keyEedit(text));
+    dispatch(key(text));
     if (text.length < 3) {
       setShowCodeButton(true);
     } else {
@@ -244,8 +256,7 @@ export const MainScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header} elevation={7}>
-        {errorMessage.message !== "" ? (
+    {errorMessage.message !== "" ? (
           <MessageBox
             text={errorMessage.message}
             bgColor={errorMessage.bgColor}
@@ -254,8 +265,7 @@ export const MainScreen = () => {
         ) : (
             false
           )}
-        <TouchableOpacity></TouchableOpacity>
-      </View>
+      <Header navigation = {navigation} ></Header>
       <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.mainWrapper}>
           <View style={styles.inputWrapper}>
@@ -264,7 +274,7 @@ export const MainScreen = () => {
               numberOfLines={4}
               multiline
               value={mainText}
-              placeholder={"Введите текст..."}
+              placeholder={intLang.enterText}
               onChangeText={(text) => onChangeText(text)}
             ></TextInput>
             <View style={styles.inputIconWrapper}>
@@ -283,9 +293,9 @@ export const MainScreen = () => {
           <View style={styles.inputWrapper}>
             <TextInput
               secureTextEntry={showKey ? false : true}
-              value = {key}
+              value={key}
               style={styles.input}
-              placeholder={"Введите ключ..."}
+              placeholder={intLang.enterKey}
               autoCapitalize={"none"}
               //value={Key}
               onChangeText={(text) => onChangeKey(text)}
@@ -311,7 +321,7 @@ export const MainScreen = () => {
             {codeStatus == 'code' ? (
               <View style={styles.btn}>
                 <Button
-                  title="Шифровать"
+                  title={intLang.encryptBtn}
                   onPress={onPressCode}
                   disabled={showCodeButton}
                   color={THEME.btn_color}
@@ -321,7 +331,7 @@ export const MainScreen = () => {
             {codeStatus == 'deCode' ? (
               <View style={styles.btn}>
                 <Button
-                  title="Разшифровать"
+                  title={intLang.decryptBtn}
                   onPress={onPressDeCode}
                   color={THEME.btn_color}
                 ></Button>
@@ -329,7 +339,7 @@ export const MainScreen = () => {
             ) : false}
             <View style={styles.btn}>
               <Button
-                title="Очистить"
+                title={intLang.clear}
                 onPress={() => clearAll()}
                 color={THEME.btn_color}
               ></Button>
@@ -340,7 +350,7 @@ export const MainScreen = () => {
               style={styles.input}
               numberOfLines={4}
               multiline
-              placeholder={"Результат..."}
+              placeholder={intLang.result}
               editable={false}
               value={finishText}
             ></TextInput>
@@ -358,15 +368,15 @@ export const MainScreen = () => {
             </View>
           </View>
           <View style={styles.btnWrapper}>
-          <View style={styles.btn}>
-            <Button
-              title="Копировать"
-              // onPress={}
-              color={THEME.btn_color}
-              style={{padding:30,color:'green'}}
-            ></Button> 
+            <View style={styles.btn}>
+              <Button
+                title={intLang.copy}
+                // onPress={}
+                color={THEME.btn_color}
+                style={{ padding: 30, color: 'green' }}
+              ></Button>
             </View>
-            
+
           </View>
           {decodingText ? (<ChekingFinishText decodingText={decodingText}></ChekingFinishText>) : false}
 
@@ -386,12 +396,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
-  header: {
-    width: "100%",
-    height: 80,
-    backgroundColor: THEME.header_color,
-    marginBottom: 5,
-  },
+ 
   scroll: {
     width: "100%",
   },
@@ -429,7 +434,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     width: "80%",
-    marginVertical:8,
+    marginVertical: 8,
   },
   btn: {
     width: "45%",
