@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { THEME } from "../THEME";
+import { THEME } from "../data/THEME";
 
 export const ChekingFinishText = (props) => {
   return (

@@ -6,7 +6,6 @@ import {
         DE_ENCRIPT_TEXT,
         //--
         ENCRIPT_TEXT, 
-        START_ENCRIPT_TEXT, 
          } from "../types";
 
 const initialState = {
