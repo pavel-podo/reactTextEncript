@@ -1,9 +1,10 @@
 import {
     LANGUAGE_TITLE,INTERFACE_LANGUAGE
 } from "../types";
+import{langInt, languages} from "../../data/languages"
 const initialState = {
-    interfaceLanguage: '',
-    languageTitle: '',
+    interfaceLanguage: langInt['ua'],
+    languageTitle: languages[1],
     
 };
 export const interfaceLanguageReducer = (state = initialState, action) => {

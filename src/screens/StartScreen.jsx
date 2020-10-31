@@ -22,9 +22,9 @@ import { langInt, languages } from "../data/languages";
 export const StartScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
-  dispatch(languageTitleEdit(languages[0]));
+ // dispatch(languageTitleEdit(languages[0]));
   const currentLang = useSelector((state) => state.interfaceLanguageReducer.languageTitle);
-  dispatch(interfaceLanguageEdit(langInt[currentLang.key]));
+ // dispatch(interfaceLanguageEdit(langInt[currentLang.key]));
   const intLang = useSelector((state) => state.interfaceLanguageReducer.interfaceLanguage);
 
 

@@ -5,43 +5,61 @@ import { Header } from "./Header"
 import {
   headerTitleEdit
 } from "../store/actions/headerTitle";
-import { useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { interfaceLanguageEdit, languageTitleEdit } from "../store/actions/interfaceLanguage";
+import { languages, langInt } from "../data/languages";
+import{SettingLangPicker} from "./SettingLangPicker"
+
+
 
 export const SettingScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
-  const languages = useSelector((state)=>state.interfaceLanguageReducer.languageTitle)
-  const intLang = useSelector((state) => state.interfaceLanguageReducer.interfaceLanguage);
-  const selected = (itemValue, itemIndex) => {
-    dispatch(interfaceLanguageEdit(langInt[itemValue]));
-    setSelectedValue(itemValue);
-  }
-  
+  const currentIntLang = useSelector((state) => state.interfaceLanguageReducer.interfaceLanguage);
+  dispatch(headerTitleEdit(currentIntLang.settings))
+
+
   return (
     <View style={styles.container}>
       <Header navigation={navigation}></Header>
       <View style={styles.settingWrapper}>
-        <View style={styles.settingItem}>
-          <View>
-            <Text style={styles.settingTitle}>{intLang.applicationLanguage}</Text>
-          </View>
-          <View>
-            <Picker
-              selectedValue={selectedValue}
-              style={{ height: 50, width: 150 }}
-              onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-              mode='dropdown'
-            >
-
-            {
-              languages.map((item)=> (<Picker.Item label={item.title} key = {item.key} value={item.key} />))
-            }
-            </Picker>
-
-          </View>
-
-        </View>
+          <SettingLangPicker/>
       </View>
+
+    </View>
+  );
+};
+const styles = StyleSheet.create({
+ 
+  settingItem: {
+    alignItems: 'center',
+    borderColor: THEME.header_color,
+    borderBottomWidth: 1,
+    width: '100%',
+    paddingBottom: 20,
+    paddingTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  settingWrapper: {
+    width: '100%',
+  },
+  settingTitle: {
+    fontSize: 16,
+    marginLeft: 20,
+
+  },
+  dropBox: {
+    top: 20,
+    right: 0,
+    position: 'absolute',
+    width: 200,
+    height: 400,
+    backgroundColor: 'red',
+    zIndex: 0,
+  },
+});
+/*
       <View style={styles.settingWrapper}>
         <View style={styles.settingItem}>
           <View>
@@ -90,43 +108,4 @@ export const SettingScreen = ({ navigation }) => {
 
 
       </View>
-    </View>
-  );
-};
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: THEME.bg_color,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    width: "100%",
-
-  },
-  settingItem: {
-    alignItems:'center',
-    borderColor: THEME.header_color,
-    borderBottomWidth: 1,
-    width: '100%',
-    paddingBottom: 20,
-    paddingTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  settingWrapper: {
-    width: '100%',
-  },
-  settingTitle: {
-    fontSize: 20,
-    marginLeft: 20,
-
-  },
-  dropBox: {
-    top: 20,
-    right: 0,
-    position: 'absolute',
-    width: 200,
-    height: 400,
-    backgroundColor: 'red',
-    zIndex: 0,
-  }
-});
+      */

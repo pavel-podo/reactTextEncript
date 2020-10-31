@@ -58,16 +58,16 @@ export const langInt = {
 export const languages =
     [
         {
-            title: 'русский',
-            key: 'ru',
-        },
-        {
             title: 'українська',
             key: 'ua',
         },
         {
             title: 'english',
             key: 'en',
+        },
+        {
+            title: 'русский',
+            key: 'ru',
         },
     ]
 
