@@ -1,7 +1,6 @@
 import {
     HEADER_TITLE
 } from "../types";
-
 const initialState = {
     headerTitle: '',
 };

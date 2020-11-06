@@ -7,8 +7,11 @@ export const CODE_STATUS = 'CODE_STATUS';
 export const ENCRIPT_TEXT = 'ENCRIPT_TEXT';
 export const START_ENCRIPT_TEXT = 'START_ENCRIPT_TEXT';
 export const HEADER_TITLE = 'HEADER_TITLE';
+export const ASCII_CODE = 'ASCII_CODE';
 
 export const INTERFACE_LANGUAGE = 'INTERFACE_LANGUAGE';
 export const LANGUAGE_TITLE = 'LANGUAGE_TITLE';
+export const THEME = 'THEME';
+export const MESSAGE_LANG = 'MESSAGE_LANG';
 
 

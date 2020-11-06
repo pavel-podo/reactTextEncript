@@ -1,5 +1,23 @@
 export const langInt = {
-    'ru': {
+    'en': {
+        encrypt: 'Encrypt',
+        decrypt: 'Decrypt',
+        settings: 'Settings',
+        about: 'About the app',
+        encryption: 'Encryption',
+        enterText: 'Enter text ...',
+        enterKey: 'Enter the key ...',
+        encryptBtn: 'Encrypt',
+        clear: 'Clear',
+        copy: 'Copy',
+        decryption: 'Decryption',
+        decryptBtn: 'Decrypt',
+        result: 'Result',
+        applicationLanguage: 'Application language',
+        messageLanguage: 'Message language',
+        themeColors: 'Theme colors',
+    },
+     'ru': {
         encrypt: 'Шифровать',
         decrypt: 'Разшифровать',
         settings: 'Настройки',
@@ -14,7 +32,7 @@ export const langInt = {
         decryptBtn: 'Разшифровать',
         result: 'Результат...',
         applicationLanguage: 'Язык приложения',
-        messageLanguage: 'Язык сообщений',
+        messageLanguage: 'Символы сообщений',
         themeColors: 'Цвета темы',
     },
     'ua': {
@@ -35,32 +53,11 @@ export const langInt = {
         messageLanguage: 'Мова повідомлень',
         themeColors: 'Кольори теми',
     },
-    'en': {
-        encrypt: 'Encrypt',
-        decrypt: 'Decrypt',
-        settings: 'Settings',
-        about: 'About the app',
-        encryption: 'Encryption',
-        enterText: 'Enter text ...',
-        enterKey: 'Enter the key ...',
-        encryptBtn: 'Encrypt',
-        clear: 'Clear',
-        copy: 'Copy',
-        decryption: 'Decryption',
-        decryptBtn: 'Decrypt',
-        result: 'Result',
-        applicationLanguage: 'Application language',
-        messageLanguage: 'Message language',
-        themeColors: 'Theme colors',
-    },
+   
 }
 
 export const languages =
     [
-        {
-            title: 'українська',
-            key: 'ua',
-        },
         {
             title: 'english',
             key: 'en',
@@ -69,9 +66,15 @@ export const languages =
             title: 'русский',
             key: 'ru',
         },
+         {
+            title: 'українська',
+            key: 'ua',
+        },
+       
+       
     ]
 
-/*
+/*AboutScreen
 Шифровать
 Разшифровать
 Настройки

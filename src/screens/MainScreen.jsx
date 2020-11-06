@@ -13,7 +13,6 @@ import {
   TextInput,
   Share,
 } from "react-native";
-import { THEME } from "../data/THEME";
 import {
   keyEdit,
   textEdit,
@@ -26,8 +25,9 @@ import {
 import { MessageBox } from "./mesageBox";
 import { ChekingFinishText } from './ChekingFinishText';
 import { lang } from "../lang/lang";
-import {Header} from "./Header"
-export const MainScreen = ({navigation}) => {
+import { Header } from "./Header"
+export const MainScreen = ({ navigation }) => {
+  const curentTheme = useSelector((state) => state.themeReducer.theme);
   const [errorMessage, setErrorMessage] = useState({
     message: "",
     bgColor: "",
@@ -37,9 +37,9 @@ export const MainScreen = ({navigation}) => {
   const [showCodeButton, setShowCodeButton] = useState(true);
   const [showKey, setShowKey] = useState(false);
   const dispatch = useDispatch();
-  
+
   const intLang = useSelector((state) => state.interfaceLanguageReducer.interfaceLanguage);
-  
+
 
   /*useEffect(()=>{
     dispatch(changeKey()
@@ -47,7 +47,7 @@ export const MainScreen = ({navigation}) => {
   },[dispatch])
   */
   const codeStatus = useSelector((state) => state.mainReducer.codeStatus);
-  const currentLang = useSelector((state) => state.mainReducer.askiiCod);
+  const currentLang = useSelector((state) => state.mainReducer.ascii);
   const mainText = useSelector((state) => state.mainReducer.startText);
   const key = useSelector((state) => state.mainReducer.key);
   const decodingText = useSelector((state) => state.mainReducer.deEncriptText);
@@ -55,12 +55,7 @@ export const MainScreen = ({navigation}) => {
     console.log("store - ", state);
     return state.mainReducer.finishText;
   });
- if (codeStatus == 'code'){
-  dispatch(headerTitleEdit(intLang.encryption))
- } 
- if (codeStatus == 'deCode'){
-  dispatch(headerTitleEdit(intLang.decryption))
- } 
+
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -77,7 +72,7 @@ export const MainScreen = ({navigation}) => {
     clearInputs()
   };
   const clearAll = () => {
-    dispatch(key(''))
+    dispatch(keyEdit(''))
     dispatch(textEdit(''))
     dispatch(finishTextEdit(''))
     dispatch(deEncriptTextEdit(''))
@@ -87,117 +82,125 @@ export const MainScreen = ({navigation}) => {
     dispatch(deEncriptTextEdit(''))
     dispatch(finishTextEdit(''))
   }
+  navigation.addListener('focus', () => {
+    if (codeStatus == 'code') {
+      dispatch(headerTitleEdit(intLang.encryption))
+    }
+    if (codeStatus == 'deCode') {
+      dispatch(headerTitleEdit(intLang.decryption))
+    }
+  })
   function textToArr(text) {
-    let arr = [];
-    let fullArr = [];
+      let arr = [];
+      let fullArr = [];
 
-    for (let i = 0; i < text.length; i++) {
-      let simbol = text[i];
-      let nSimbol = currentLang.indexOf(simbol);
-      arr.push(nSimbol);
-      fullArr.push({ s: simbol, n: nSimbol });
+      for (let i = 0; i < text.length; i++) {
+        let simbol = text[i];
+        let nSimbol = currentLang.indexOf(simbol);
+        arr.push(nSimbol);
+        fullArr.push({ s: simbol, n: nSimbol });
+      }
+      return arr;
     }
-    return arr;
-  }
   function codeText(textSimArray, keySimArray) {
-    let i = -1,
-      long = currentLang.length;
-    let retArr = textSimArray.map((e) => {
-      i++;
-      i > keySimArray.length - 1 ? (i = 0) : false;
+      let i = -1,
+        long = currentLang.length;
+      let retArr = textSimArray.map((e) => {
+        i++;
+        i > keySimArray.length - 1 ? (i = 0) : false;
 
-      let result = (e + keySimArray[i]) % long;
-      return result;
-    });
+        let result = (e + keySimArray[i]) % long;
+        return result;
+      });
 
-    return retArr;
-  }
-  function arrToText(arr) {
-    let str = "";
-    arr.forEach((element) => {
-      str = str + currentLang[element];
-    });
-    return str;
-  }
-  function deCodeText(textArr, keyArr) {
-    let i = -1;
-    let long = currentLang.length;
-    let result = textArr.map((e) => {
-      i++;
-      i == keyArr.length ? (i = 0) : false;
-      //(l + t - k) % l
-      let r = long + e - keyArr[i];
-      if (r >= long) {
-        r = r % long;
-      } else {
-        false;
-      }
-      return r;
-    });
-    return result;
-  }
-  function changeSymbols(text, symbols) {
-    for (let i = 0; i < text.length; i++) {
-      if (symbols.indexOf(text[i]) < 0) {
-        return text[i];
-        break;
-      }
+      return retArr;
     }
-    return false;
-  }
+  function arrToText(arr) {
+      let str = "";
+      arr.forEach((element) => {
+        str = str + currentLang[element];
+      });
+      return str;
+    }
+  function deCodeText(textArr, keyArr) {
+      let i = -1;
+      let long = currentLang.length;
+      let result = textArr.map((e) => {
+        i++;
+        i == keyArr.length ? (i = 0) : false;
+        //(l + t - k) % l
+        let r = long + e - keyArr[i];
+        if (r >= long) {
+          r = r % long;
+        } else {
+          false;
+        }
+        return r;
+      });
+      return result;
+    }
+  function changeSymbols(text, symbols) {
+      for (let i = 0; i < text.length; i++) {
+        if (symbols.indexOf(text[i]) < 0) {
+          return text[i];
+          break;
+        }
+      }
+      return false;
+    }
   function showMessage(text, bgColor, textColor, time) {
-    console.log('show message', text, bgColor, textColor, time)
-    setErrorMessage({
-      message: text,
-      bgColor: bgColor,
-      textColor: textColor,
-    });
-    setTimeout(() => setErrorMessage({ message: "" }), time);
+      console.log('show message', text, bgColor, textColor, time)
+      setErrorMessage({
+        message: text,
+        bgColor: bgColor,
+        textColor: textColor,
+      });
+      setTimeout(() => setErrorMessage({ message: "" }), time);
 
-  }
+    }
   function mainTest(text, key) {
-    /*
-    - получить допустимые символы 'currentLang'
-    - проверить символы в тексте и в ключе
-    - перевети симоволы ключа в масив
-    - перевести символы текста в масив
-    - зашифровать, получить масив шифрованых символов
-    - перевести зашифрованный масив в текст
-    ---
-    - перевеси шифрованый текст в масив
-    - перевести ключ в масив (уже сделанно)
-    - разшифровать - получить мачив символов
-    - перевести масив в текст
-    */
-    let //currentLang
-      textArray = textToArr(text),
-      keyArray = textToArr(key),
-      testCodeText = codeText(textArray, keyArray),
-      testResultCode = arrToText(testCodeText),
-      ///--
-      CodeSimbols = textToArr(testResultCode),
-      decode = deCodeText(CodeSimbols, keyArray),
-      decodetText = arrToText(decode);
-    if (text == decodetText) {
-      console.log(`text - ${text}
+      /*
+      - получить допустимые символы 'currentLang'
+      - проверить символы в тексте и в ключе
+      - перевети симоволы ключа в масив
+      - перевести символы текста в масив
+      - зашифровать, получить масив шифрованых символов
+      - перевести зашифрованный масив в текст
+      ---
+      - перевеси шифрованый текст в масив
+      - перевести ключ в масив (уже сделанно)
+      - разшифровать - получить мачив символов
+      - перевести масив в текст
+      */
+      let //currentLang
+        textArray = textToArr(text),
+        keyArray = textToArr(key),
+        testCodeText = codeText(textArray, keyArray),
+        testResultCode = arrToText(testCodeText),
+        ///--
+        CodeSimbols = textToArr(testResultCode),
+        decode = deCodeText(CodeSimbols, keyArray),
+        decodetText = arrToText(decode);
+      if (text == decodetText) {
+        console.log(`text - ${text}
       key - ${key}
       code - ${testResultCode}
       decode - ${decodetText}`);
-    } else {
-      console.log("----START----");
-      console.log("test text - ", text);
-      console.log("array symbol text - ", textArray);
-      console.log("test key - ", key);
-      console.log("currentLang - ", currentLang.length);
-      console.log("testCodeText", testCodeText);
-      console.log("testResultCode", testResultCode);
-      console.log("------------------");
-      console.log("testDecode symbol", CodeSimbols);
-      console.log("testDecodeText", decode);
-      console.log("decodetText", decodetText);
-      console.log("----FINISH----");
+      } else {
+        console.log("----START----");
+        console.log("test text - ", text);
+        console.log("array symbol text - ", textArray);
+        console.log("test key - ", key);
+        console.log("currentLang - ", currentLang.length);
+        console.log("testCodeText", testCodeText);
+        console.log("testResultCode", testResultCode);
+        console.log("------------------");
+        console.log("testDecode symbol", CodeSimbols);
+        console.log("testDecodeText", decode);
+        console.log("decodetText", decodetText);
+        console.log("----FINISH----");
+      }
     }
-  }
 
   const onChangeText = (text) => {
 
@@ -206,7 +209,7 @@ export const MainScreen = ({navigation}) => {
   };
   const onChangeKey = (text) => {
     clearInputs()
-    dispatch(key(text));
+    dispatch(keyEdit(text));
     if (text.length < 3) {
       setShowCodeButton(true);
     } else {
@@ -224,48 +227,114 @@ export const MainScreen = ({navigation}) => {
   };
 
   let onPressCode = () => {
-    if (mainText.length > 500) {
-      showMessage('Длина текста на может \n быть больше 500 символов', 'grey', 'white', 'rgba(128,128,128,0.5)')
-      return
-    }
-    let i = changeSymbols(mainText, currentLang);
-    if (i !== false) {
-      console.log('Неправильный символ - ' + i.charCodeAt())
-      showMessage('Неправильный символ ' + i, 'rgba(255,0,0,0.7)', 'white', 2000)
-      return;
-    }
-
+    /* if (mainText.length > 500) {
+       showMessage('Длина текста на может \n быть больше 500 символов', 'grey', 'white', 'rgba(128,128,128,0.5)')
+       return
+     }
+     let i = changeSymbols(mainText, currentLang);
+     if (i !== false) {
+       console.log('Неправильный символ - ' + i.charCodeAt())
+       showMessage('Неправильный символ ' + i, 'rgba(255,0,0,0.7)', 'white', 2000)
+       return;
+     }
+     */
     let textArr = textToArr(mainText), // числовой масив текста
       keyArr = textToArr(key), // числовой масив ключа
       codeArr = codeText(textArr, keyArr), // числовой масив закодированого текста
       codingText = arrToText(codeArr);
-
     dispatch(finishTextEdit(codingText));
-
     //codeText(textToArr(currentLang), textToArr(currentLang));
     let decodeArr = deCodeText(codeArr, keyArr), // числовой масив закодированого текста
       changeText = arrToText(decodeArr);
-
     dispatch(deEncriptTextEdit(changeText));
-
   };
 
   const showPaswordTougle = () => {
     showKey ? setShowKey(false) : setShowKey(true);
   };
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: curentTheme.bg_color,
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+    },
 
+    scroll: {
+      width: "100%",
+    },
+    mainWrapper: {
+      alignItems: "center",
+      backgroundColor: "#fff",
+      width: "100%",
+      backgroundColor: curentTheme.bg_color,
+    },
+    input: {
+      width: "85%",
+      backgroundColor: curentTheme.second_color
+      //width: "100%",
+    },
+    inputWrapper: {
+      alignItems: "center",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      padding: 5,
+      borderRadius: 8,
+      backgroundColor: curentTheme.second_color,
+      width: "80%",
+      marginVertical: 8,
+      paddingHorizontal: 5,
+    },
+    inputIconWrapper: {
+      width: "14%",
+      height: "100%",
+    },
+    touchInputIcon: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    btnWrapper: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      width: "80%",
+      marginVertical: 8,
+    },
+    btn: {
+      width: "45%",
+    },
+
+    text: {
+      color: "white",
+    },
+    modalMessage: {
+      backgroundColor: "#d3d3d3cc",
+      padding: 10,
+      borderRadius: 5,
+      position: "absolute",
+      bottom: 50,
+    },
+    errorBlock: {
+      backgroundColor: "#BF3030cc",
+      position: "absolute",
+      padding: 10,
+      borderRadius: 8,
+      zIndex: 200,
+    },
+  });
   return (
     <View style={styles.container}>
-    {errorMessage.message !== "" ? (
-          <MessageBox
-            text={errorMessage.message}
-            bgColor={errorMessage.bgColor}
-            textColor={errorMessage.textColor}
-          ></MessageBox>
-        ) : (
-            false
-          )}
-      <Header navigation = {navigation} ></Header>
+      {errorMessage.message !== "" ? (
+        <MessageBox
+          text={errorMessage.message}
+          bgColor={errorMessage.bgColor}
+          textColor={errorMessage.textColor}
+        ></MessageBox>
+      ) : (
+          false
+        )}
+      <Header navigation={navigation} ></Header>
       <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.mainWrapper}>
           <View style={styles.inputWrapper}>
@@ -285,7 +354,7 @@ export const MainScreen = ({navigation}) => {
                 <FontAwesome5
                   name="paste"
                   size={24}
-                  color={THEME.header_color}
+                  color={curentTheme.second_font_color}
                 />
               </TouchableOpacity>
             </View>
@@ -306,12 +375,12 @@ export const MainScreen = ({navigation}) => {
                 onPress={() => showPaswordTougle()}
               >
                 {showKey ? (
-                  <Octicons name="eye" size={24} color={THEME.header_color} />
+                  <Octicons name="eye" size={24} color={curentTheme.second_font_color} />
                 ) : (
                     <Octicons
                       name="eye-closed"
                       size={24}
-                      color={THEME.header_color}
+                      color={curentTheme.second_font_color}
                     />
                   )}
               </TouchableOpacity>
@@ -324,7 +393,7 @@ export const MainScreen = ({navigation}) => {
                   title={intLang.encryptBtn}
                   onPress={onPressCode}
                   disabled={showCodeButton}
-                  color={THEME.btn_color}
+                  color={curentTheme.btn_color}
                 ></Button>
               </View>
             ) : false}
@@ -333,7 +402,7 @@ export const MainScreen = ({navigation}) => {
                 <Button
                   title={intLang.decryptBtn}
                   onPress={onPressDeCode}
-                  color={THEME.btn_color}
+                  color={curentTheme.btn_color}
                 ></Button>
               </View>
             ) : false}
@@ -341,7 +410,7 @@ export const MainScreen = ({navigation}) => {
               <Button
                 title={intLang.clear}
                 onPress={() => clearAll()}
-                color={THEME.btn_color}
+                color={curentTheme.btn_color}
               ></Button>
             </View>
           </View>
@@ -362,7 +431,7 @@ export const MainScreen = ({navigation}) => {
                 <FontAwesome5
                   name="share-alt"
                   size={24}
-                  color={THEME.header_color}
+                  color={curentTheme.second_font_color}
                 />
               </TouchableOpacity>
             </View>
@@ -372,9 +441,9 @@ export const MainScreen = ({navigation}) => {
               <Button
                 title={intLang.copy}
                 // onPress={}
-                color={THEME.btn_color}
-                style={{ padding: 30, color: 'green' }}
+                color={curentTheme.btn_color}
               ></Button>
+
             </View>
 
           </View>
@@ -388,75 +457,7 @@ export const MainScreen = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: THEME.bg_color,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-  },
- 
-  scroll: {
-    width: "100%",
-  },
-  mainWrapper: {
-    alignItems: "center",
-    backgroundColor: "#fff",
-    width: "100%",
-    backgroundColor: THEME.bg_color,
-  },
-  input: {
-    width: "85%",
-    //width: "100%",
-  },
-  inputWrapper: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 5,
-    borderRadius: 8,
-    backgroundColor: "#fff",
-    width: "80%",
-    marginVertical: 8,
-    paddingHorizontal: 5,
-  },
-  inputIconWrapper: {
-    width: "14%",
-    height: "100%",
-  },
-  touchInputIcon: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  btnWrapper: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "80%",
-    marginVertical: 8,
-  },
-  btn: {
-    width: "45%",
-  },
-  text: {
-    color: "white",
-  },
-  modalMessage: {
-    backgroundColor: "#d3d3d3cc",
-    padding: 10,
-    borderRadius: 5,
-    position: "absolute",
-    bottom: 50,
-  },
-  errorBlock: {
-    backgroundColor: "#BF3030cc",
-    position: "absolute",
-    padding: 10,
-    borderRadius: 8,
-    zIndex: 200,
-  },
-});
+
 
 let changeLangArr = (text) => {
   let mapArray = [];

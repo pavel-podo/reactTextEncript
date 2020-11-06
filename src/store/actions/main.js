@@ -1,4 +1,4 @@
-import {CODE_STATUS,KEY, TEXT,ENCRIPT_TEXT,START_ENCRIPT_TEXT,DE_ENCRIPT_TEXT,FINISH_TEXT} from '../types'
+import {CODE_STATUS,KEY, TEXT,ENCRIPT_TEXT,START_ENCRIPT_TEXT,DE_ENCRIPT_TEXT,FINISH_TEXT,ASCII_CODE} from '../types'
 export const keyEdit  = (key)=>{
     return{
         type :KEY,
@@ -34,5 +34,11 @@ export const encriptTextEdit = (encriptText) =>{
     return{
         type:ENCRIPT_TEXT,
         payload:encriptText
+    }
+}
+export const asciiCodeEdit = (ascii) =>{
+    return{
+        type:ASCII_CODE,
+        payload:ascii
     }
 }

@@ -6,6 +6,7 @@ import {
         DE_ENCRIPT_TEXT,
         //--
         ENCRIPT_TEXT, 
+        ASCII_CODE
          } from "../types";
 
 const initialState = {
@@ -13,7 +14,8 @@ const initialState = {
     finishText: '',
     encriptText: '',
     key: '',
-    askiiCod: `\\'!"#$%&()*+,-./0123456789:;<=>? @ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя\n`,
+    ascii: ``,
+//    ascii: `\\'!"#$%&()*+,-./0123456789:;<=>? @ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя\n`,
     deEncriptText: '',
     codeStatus: 'code',
 };
@@ -25,6 +27,7 @@ export const mainReducer = (state = initialState, action) => {
         case DE_ENCRIPT_TEXT: return { ...state, deEncriptText: action.payload }
         case CODE_STATUS: return { ...state, codeStatus: action.payload }
         //----
+        case ASCII_CODE: return { ...state, ascii: action.payload }
         case ENCRIPT_TEXT: return { ...state, encriptText: action.payload }
         default: return state
     }

@@ -30,5 +30,10 @@
     "@babel/core": "^7.8.6",
     "babel-preset-expo": "~8.1.0"
   },
-  "private": true
+  "private": true,
+  "android":{
+    "package":"com.pavel_first_app",
+    "versionCode":1,
+    "permission":[]
+  }
 }
